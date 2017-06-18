@@ -1,11 +1,10 @@
 <?php
 
-/*Załączenie pliku odpowiadającego za połączenie z bazą danych.*/
 require_once('src/connection.php');
 require_once('src/Book.php');
 
-if ($_SERVER['REQUEST_METHOD']  == "POST") {
-    /*Przypisanie danych wysłanych przez skrypt.js do zmiennej*/
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
     $title = $_POST['title'];
     $author = $_POST['author'];
     $description = $_POST['description'];
@@ -25,16 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         $id = $_GET['id'];
 
-        $sql = "SELECT * FROM book WHERE id=$id";
+        $id = intval($id);
 
-        $result = $connection->query($sql);
+        $book = Book::loadFromDB($connection, $id);
 
-        $row = $result->fetch_assoc();
+        $book = (array)$book;
 
-        echo json_encode($row);
+        foreach ($book as $value) {
+            $array[] = $value;
+        }
+
+        echo json_encode($array);
+
 
     } else {
-        // na chwilę obecna nie wykorzystuję klasy Book - i tak nie działa prawidłowo, problem leży po stroonie js.
 
         $sql = "SELECT * FROM book";
 
@@ -46,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             $books[] = $row;
         }
 
-        echo json_encode( $books );
+        echo json_encode($books);
     }
 
 }
@@ -58,12 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === "PUT") {
         $title = $_GET['title'];
         $author = $_GET['author'];
         $description = $_GET['description'];
+        $book = Book::loadFromDB($connection, $id);
 
-        $sql = "UPDATE book SET title='$title', author='$author', description='$description' WHERE id=$id";
-
-        $result = $connection->query($sql);
-
-        if ($result) {
+        if ($book->update($connection, $title, $author, $description)) {
             $array['status'] = "Success";
         } else {
             $array['status'] = "Error";
@@ -72,19 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] === "PUT") {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === "DELETE") {
+if ($_SERVER['REQUEST_METHOD'] == "DELETE") {
 
     $id = $_GET['id'];
 
-    $sql = "DELETE FROM book WHERE id=$id";
+    $id = intval($id);
 
-    $result = $connection->query($sql);
+    $book = Book::loadFromDB($connection, $id);
 
-    if ($result) {
+    if ($book->deleteFromDB($connection)) {
         $array['status'] = "Success";
     } else {
         $array['status'] = "Error";
     }
     echo json_encode($array);
-
 }

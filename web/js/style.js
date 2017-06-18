@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    /*WYSYŁANIE DANYCH DO BAZY - Działa prawidłowo*/
+    /*WYSYŁANIE DANYCH DO BAZY*/
     $('#wyslij').click(function () {
         var wartosc_z_listy_title = $('#title').val();
         var wartosc_z_listy_author = $('#author').val();
@@ -23,6 +23,8 @@ $(document).ready(function () {
 
     });
 
+    /*Załadowanie wszystkich książek z bazy danych i stworzenie części tabeli*/
+
     function loadBooks() {
         $.ajax({
             url: 'api/books.php',
@@ -30,7 +32,6 @@ $(document).ready(function () {
             method: 'get',
             success: function (data) {
                 var employeeTable = $('#tblEmployee tbody');
-
                 $(data).each(function (index, emp) {
                     employeeTable.append('<tr><td>' + emp.id + '</td><td>' + emp.title +
                         '</td><td><button class="showButton" id="' + emp.id + '">Pokaż</button>' +
@@ -39,11 +40,11 @@ $(document).ready(function () {
                     );
                 });
 
+                // Aktywacja przycisku pokazującego szczegóły każdej książkie - dane przekazywane GET-em
+
                 $('.showButton').click(function () {
                     $('#editBox').html('');
                     var id = $(this).attr('id');
-                    console.log("ok");
-                    console.log(id);
                     $.ajax({
                         url: 'api/books.php',
                         dataType: 'json',
@@ -51,14 +52,15 @@ $(document).ready(function () {
                         data: {id: id},
 
                         success: function (data) {
-                            console.log(data);
-                            $('#titleBox').html(data.title);
-                            $('#authorBox').html(data.author);
-                            $('#descriptionBox').html(data.description);
+                            $('#titleBox').html(data[1]);
+                            $('#authorBox').html(data[2]);
+                            $('#descriptionBox').html(data[3]);
                         }
 
                     })
-                })
+                });
+
+                //Przycisk aktywujący mozliwośc edycji - wyświetla się formularz
 
                 $('.editButton').click(function () {
                     $('#authorBox').html('');
@@ -91,6 +93,8 @@ $(document).ready(function () {
                         var author = $('input[name="author"]').val();
                         var description = $('input[name="description"]').val();
 
+                        // Po wpisaniu nowych danych do formularza, przesłanie danych PUT-em
+
                         $.ajax({
                             url: 'api/books.php?id=' + id +
                             '&title=' + title +
@@ -116,12 +120,13 @@ $(document).ready(function () {
 
                 })
 
+                //usuwanie książek - przesłane DELETE
+
                 $(".deleteButton").click(function () {
                     var id = $(this).attr('id');
                     $.ajax({
                         url: 'src/books.php?id=' + id,
-                        dataType: 'json',
-                        method: 'delete',
+                        type: 'DELETE',
 
                         success: function () {
                             alert("Pomyślnie usunąłeś książkę");
@@ -135,6 +140,9 @@ $(document).ready(function () {
         })
     }
 
+    // przy załadowaniu strony oraz podczas dodania do bazy danych nowej pozycji - ładowanie funkcji,
+    // która poakzuje wszystkie pozycje z bazy danych
+
     loadBooks();
 
     $('#wyslij').click(function () {
@@ -143,5 +151,3 @@ $(document).ready(function () {
     })
 
 });
-
-

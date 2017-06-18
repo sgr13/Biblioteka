@@ -116,7 +116,7 @@ class Book
         }
         $table = [];
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $newBook = new Book();
             $newBook->id = $row['id'];
             $newBook->title = $row['title'];
@@ -135,7 +135,7 @@ class Book
             $sql = "INSERT INTO book (title, author, description) VALUES ('$title', '$author', '$description')";
 
             $result = $connection->query($sql);
-            if($result) {
+            if ($result) {
                 $this->id = $connection->insert_id;
             } else {
                 die("Błąd zapisu do bazy danych" . $connection->error);
@@ -143,14 +143,37 @@ class Book
         }
     }
 
-    public function update(mysqli $connection, $name, $author, $description)
+    public function update(mysqli $connection, $title, $author, $description)
     {
+        $id = $this->id;
+        $title = htmlentities($title);
+        $author = htmlentities($author);
+        $description = htmlentities($description);
 
+        $sql = "UPDATE book SET title='$title', author='$author', description='$description' WHERE id=$id";
+
+        $result = $connection->query($sql);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public function deleteFromDB(mysqli $connection, $id)
+    public function deleteFromDB(mysqli $connection)
     {
+        $id = $this->id;
 
+        $sql = "DELETE FROM book WHERE id=$id";
+
+        $result = $connection->query($sql);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -53,8 +53,10 @@ require_once('api/src/connection.php');
 <div id="box" style="width: 35%; float: left; margin-left: 10px">
     <h2 style="text-align: center">Szczegóły książki:</h2>
 
-    <div id="bookInfo">
-
+    <div id="bookInfo" style="width: 100%">
+        <div style="width: 100%; font-size: 150%; font-style: italic; text-align: center" id="titleBox"></div>
+        <div style="width: 100%; font-weight: 700; text-align: center" id="authorBox"></div>
+        <div id="descriptionBox"></div>
     </div>
     <div id="editBox">
 

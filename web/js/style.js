@@ -44,13 +44,16 @@ $(document).ready(function () {
                     console.log("ok");
                     console.log(id);
                     $.ajax({
-                        url: 'api/books.php',
+                        url: 'api/books2.php',
                         dataType: 'json',
                         method: 'get',
                         data: {id: id},
 
                         success: function (data) {
-                            console.log("chujek");
+                            console.log(data);
+                            $('#titleBox').html(data.title);
+                            $('#authorBox').html(data.author);
+                            $('#descriptionBox').html(data.description);
                         }
 
                     })

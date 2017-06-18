@@ -21,6 +21,16 @@ if ($_SERVER['REQUEST_METHOD']  == "POST") {
 
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
+    if (isset($_GET['id'])) {
+        $sql = "SELECT * FROM book";
+
+        $result = $connection->query($sql);
+
+        $row = $result->fetch_assoc();
+
+        echo json_encode($row);
+    }
+
     // na chwilę obecna nie wykorzystuję klasy Book - i tak nie działa prawidłowo, problem leży po stroonie js.
 
     $sql = "SELECT id,title FROM book";

@@ -13,11 +13,9 @@ $(document).ready(function () {
                 author: wartosc_z_listy_author,
                 description: wartosc_z_listy_description
             },
-
             success: function () {
                 alert("Wysłano do bazy danych");
             },
-
             error: function (blad) {
                 alert("Wystąpił błąd");
             }
@@ -25,27 +23,47 @@ $(document).ready(function () {
 
     });
 
-    /*ODBIERANIE DANYCH Z BAZY - WSZYSTKO - nie działa */
+    function loadBooks() {
+        $.ajax({
+            url: 'api/books.php',
+            dataType: "json",
+            method: 'get',
+            success: function (data) {
+                var employeeTable = $('#tblEmployee tbody');
 
-    $.get( "api/books.php", function(data) {
-        console.log(data);
-        data.forEach(function(e) {
-            var first = "<div class='omg' style='float: left'>"
-                + e.id + "</div><div style='float: left'>"
-                + e.title + "</div><div><button class='cos' style='width: 99px'>Usuń</button><button class='cos'>Edytuj</button>" +
-                "</div><div style='clear: both'></div>";
-                $(".wykaz").append(first);
+                $(data).each(function (index, emp) {
+                    employeeTable.append('<tr><td>' + emp.id + '</td><td>' + emp.title +
+                        '</td><td><button class="showButton" id="' + emp.id + '">Pokaż</button>' +
+                        '</td><td><button class="editButton" id="' + emp.id + '">Edytuj</button>' +
+                        '</td><td><button class="deleteButton" id="' + emp.id + '">Usuń</button></td></tr>'
+                    );
+                });
+
+                $('.showButton').click(function () {
+                    var id = $(this).attr('id');
+                    console.log("ok");
+                    console.log(id);
+                    $.ajax({
+                        url: 'api/books.php',
+                        dataType: 'json',
+                        method: 'get',
+                        data: {id: id},
+
+                        success: function (data) {
+                            console.log("chujek");
+                        }
+
+                    })
+                })
+            }
         })
-    }, "json");
+    }
 
+    loadBooks();
 
-    //mimo że w inspektorze widzi prawidłowo elementy DOM wraz z przypisanymi klasami, stworzonymi przyciskami itd.
-    // to nie jestem w stanie po wykonaniu akcji np. na przycisku uzyskac jakiegokolwiek rezultatu
-    //nie rozumiem o co chodzi. Kręciłem się w kółko juz chyba pół dnia wczoraj, różnymi metodami,
-    // zawsze dochodzę do tego momentu i koniec
-
-    $('.cos').on("click",function () {
-        console.log("działa przycisk");
+    $('#wyslij').click(function () {
+        $('#tblEmployee tbody').html('');
+        loadBooks();
     })
 
 });

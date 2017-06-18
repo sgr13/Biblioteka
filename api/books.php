@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     } else {
         // na chwilę obecna nie wykorzystuję klasy Book - i tak nie działa prawidłowo, problem leży po stroonie js.
 
-        $sql = "SELECT id,title FROM book";
+        $sql = "SELECT * FROM book";
 
         $result = $connection->query($sql);
 
@@ -48,5 +48,43 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         echo json_encode( $books );
     }
+
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "PUT") {
+    if (isset($_GET['id']) && isset($_GET['title']) && isset($_GET['author']) && isset($_GET['description'])) {
+
+        $id = $_GET['id'];
+        $title = $_GET['title'];
+        $author = $_GET['author'];
+        $description = $_GET['description'];
+
+        $sql = "UPDATE book SET title='$title', author='$author', description='$description' WHERE id=$id";
+
+        $result = $connection->query($sql);
+
+        if ($result) {
+            $array['status'] = "Success";
+        } else {
+            $array['status'] = "Error";
+        }
+        echo json_encode($array);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "DELETE") {
+
+    $id = $_GET['id'];
+
+    $sql = "DELETE FROM book WHERE id=$id";
+
+    $result = $connection->query($sql);
+
+    if ($result) {
+        $array['status'] = "Success";
+    } else {
+        $array['status'] = "Error";
+    }
+    echo json_encode($array);
 
 }

@@ -57,6 +57,7 @@ require_once('api/src/connection.php');
         <div style="width: 100%; font-size: 150%; font-style: italic; text-align: center" id="titleBox"></div>
         <div style="width: 100%; font-weight: 700; text-align: center" id="authorBox"></div>
         <div id="descriptionBox"></div>
+        <hr>
     </div>
     <div id="editBox">
 

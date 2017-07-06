@@ -20,7 +20,6 @@ $(document).ready(function () {
                 alert("Wystąpił błąd");
             }
         });
-
     });
 
     /*Załadowanie wszystkich książek z bazy danych i stworzenie części tabeli*/
@@ -39,9 +38,7 @@ $(document).ready(function () {
                         '</td><td><button class="deleteButton" id="' + emp.id + '">Usuń</button></td></tr>'
                     );
                 });
-
                 // Aktywacja przycisku pokazującego szczegóły każdej książkie - dane przekazywane GET-em
-
                 $('.showButton').click(function () {
                     $('#editBox').html('');
                     var id = $(this).attr('id');
@@ -56,18 +53,14 @@ $(document).ready(function () {
                             $('#authorBox').html(data[2]);
                             $('#descriptionBox').html(data[3]);
                         }
-
                     })
                 });
-
                 //Przycisk aktywujący mozliwośc edycji - wyświetla się formularz
-
                 $('.editButton').click(function () {
                     $('#authorBox').html('');
                     $('#titleBox').html('');
                     $('#descriptionBox').html('');
                     $('#editBox').html('');
-
 
                     $('#editBox').append(
                         '<h3>Edycja Książki</h3>' +
@@ -76,7 +69,7 @@ $(document).ready(function () {
                         'Autor<br><input type="text" name="author"><br>' +
                         'Opis:<br><input type="text" name="description"><br></form>' +
                         '<button type="submit" id="changeButton">Zmień</button>'
-                    )
+                    );
 
                     var id = $(this).attr('id');
                     var title = $(this).attr('title');
@@ -88,13 +81,10 @@ $(document).ready(function () {
                     $('input[name="description"]').val(description);
 
                     $('#changeButton').click(function () {
-
                         var title = $('input[name="title"]').val();
                         var author = $('input[name="author"]').val();
                         var description = $('input[name="description"]').val();
-
                         // Po wpisaniu nowych danych do formularza, przesłanie danych PUT-em
-
                         $.ajax({
                             url: 'api/books.php?id=' + id +
                             '&title=' + title +
@@ -108,7 +98,6 @@ $(document).ready(function () {
                                 author: author,
                                 description: description
                             },
-
                             success: function () {
                                 alert("Pomyślnie zmodyfikowałeś dane książki");
                                 $('#tblEmployee tbody').html('');
@@ -117,11 +106,8 @@ $(document).ready(function () {
                         })
 
                     })
-
-                })
-
+                });
                 //usuwanie książek - przesłane DELETE
-
                 $(".deleteButton").click(function () {
                     var id = $(this).attr('id');
                     $.ajax({
@@ -139,15 +125,12 @@ $(document).ready(function () {
             }
         })
     }
-
     // przy załadowaniu strony oraz podczas dodania do bazy danych nowej pozycji - ładowanie funkcji,
     // która poakzuje wszystkie pozycje z bazy danych
-
     loadBooks();
 
     $('#wyslij').click(function () {
         $('#tblEmployee tbody').html('');
         loadBooks();
     })
-
 });

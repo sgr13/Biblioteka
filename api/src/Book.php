@@ -3,14 +3,11 @@
 class Book
 {
     private $id;
-
     private $title;
-
     private $author;
-
     private $description;
 
-    function __construct()
+    public function __construct()
     {
         $this->id = -1;
         $this->title = '';
@@ -33,7 +30,6 @@ class Book
     {
         $this->id = $id;
     }
-
 
     /**
      * @return mixed
@@ -87,15 +83,14 @@ class Book
     {
         $id = intval($id);
         $sql = "SELECT * FROM book WHERE id=$id";
-
         $result = $connection->query($sql);
 
         if (!$result) {
             die("Błąd połączenia z bazą danych");
         }
+
         $bookArray = $result->fetch_assoc();
         $book = new Book();
-
         $book->setId($bookArray['id']);
         $book->setTitle($bookArray['title']);
         $book->setAuthor($bookArray['author']);
@@ -106,9 +101,7 @@ class Book
 
     public static function loadAllFromDB(mysqli $connection)
     {
-
         $sql = "SELECT * FROM book";
-
         $result = $connection->query($sql);
 
         if (!$result) {
@@ -122,7 +115,6 @@ class Book
             $newBook->title = $row['title'];
             $newBook->author = $row['author'];
             $newBook->description = $row['description'];
-
             $table[] = $newBook;
         }
         return $table;
@@ -131,10 +123,13 @@ class Book
     public function create(mysqli $connection, $title, $author, $description)
     {
         if ($this->id == -1) {
+            $title = $connection->real_escape_string($title);
+            $author = $connection->real_escape_string($author);
+            $description = $connection->real_escape_string($description);
 
             $sql = "INSERT INTO book (title, author, description) VALUES ('$title', '$author', '$description')";
-
             $result = $connection->query($sql);
+
             if ($result) {
                 $this->id = $connection->insert_id;
             } else {
@@ -146,12 +141,11 @@ class Book
     public function update(mysqli $connection, $title, $author, $description)
     {
         $id = $this->id;
-        $title = htmlentities($title);
-        $author = htmlentities($author);
-        $description = htmlentities($description);
+        $title = $connection->real_escape_string($title);
+        $author = $connection->real_escape_string($author);
+        $description = $connection->real_escape_string($description);
 
         $sql = "UPDATE book SET title='$title', author='$author', description='$description' WHERE id=$id";
-
         $result = $connection->query($sql);
 
         if ($result) {
@@ -164,9 +158,7 @@ class Book
     public function deleteFromDB(mysqli $connection)
     {
         $id = $this->id;
-
         $sql = "DELETE FROM book WHERE id=$id";
-
         $result = $connection->query($sql);
 
         if ($result) {
@@ -175,5 +167,4 @@ class Book
             return false;
         }
     }
-
 }
